@@ -8,10 +8,10 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controllers.SampleController">
    <children>
       <Button layoutX="365.0" layoutY="43.0" mnemonicParsing="false" onAction="#buttonCLicked" text="Ок" />
-      <Label layoutX="255.0" layoutY="6.0" text="Прогноз погоды" />
+      <Label fx:id="forecast" layoutX="255.0" layoutY="6.0" text="Прогноз погоды" />
       <TextField fx:id="latitude" layoutX="204.0" layoutY="43.0" prefHeight="25.0" prefWidth="72.0" promptText="Широта" />
       <TextField fx:id="longitude" layoutX="283.0" layoutY="43.0" prefHeight="25.0" prefWidth="72.0" promptText="Долгота" />
-      <Label alignment="CENTER" layoutX="178.0" layoutY="85.0" prefHeight="17.0" prefWidth="231.0" text=" Атмосферное давление по дням" textAlignment="CENTER" />
+      <Label fx:id="atmsTit" alignment="CENTER" layoutX="178.0" layoutY="85.0" prefHeight="17.0" prefWidth="231.0" text=" Атмосферное давление по дням" textAlignment="CENTER" visible="false"/>
       <Label fx:id="day0" alignment="CENTER" contentDisplay="TOP" layoutX="67.0" layoutY="125.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
       <Label fx:id="day1" alignment="CENTER" contentDisplay="TOP" layoutX="178.0" layoutY="125.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
       <Label fx:id="day2" alignment="CENTER" contentDisplay="TOP" layoutX="274.0" layoutY="125.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
@@ -22,20 +22,20 @@
       <Label fx:id="pres2" alignment="CENTER" layoutX="274.0" layoutY="162.0" prefHeight="17.0" prefWidth="90.0" />
       <Label fx:id="pres3" alignment="CENTER" layoutX="381.0" layoutY="162.0" prefHeight="17.0" prefWidth="90.0" />
       <Label fx:id="pres4" alignment="CENTER" layoutX="483.0" layoutY="162.0" prefHeight="17.0" prefWidth="90.0" />
-      <Label layoutX="171.0" layoutY="192.0" text="Максимальное давление" />
+      <Label fx:id="maxPr" layoutX="171.0" layoutY="192.0" text="Максимальное давление" visible="false" />
       <Label fx:id="maxPres" alignment="CENTER" contentDisplay="CENTER" layoutX="338.0" layoutY="192.0" prefHeight="17.0" prefWidth="55.0" />
-      <Label fx:id="day01" alignment="CENTER" contentDisplay="TOP" layoutX="47.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label fx:id="day11" alignment="CENTER" contentDisplay="TOP" layoutX="158.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label fx:id="day21" alignment="CENTER" contentDisplay="TOP" layoutX="254.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label fx:id="day31" alignment="CENTER" contentDisplay="TOP" layoutX="361.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label fx:id="day41" alignment="CENTER" contentDisplay="TOP" layoutX="463.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label layoutX="185.0" layoutY="236.0" text="Минимальная разница между температурами" />
-      <Label fx:id="temp011" alignment="CENTER" contentDisplay="TOP" layoutX="47.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label fx:id="temp111" alignment="CENTER" contentDisplay="TOP" layoutX="158.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label fx:id="temp211" alignment="CENTER" contentDisplay="TOP" layoutX="254.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label fx:id="temp311" alignment="CENTER" contentDisplay="TOP" layoutX="361.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label fx:id="temp411" alignment="CENTER" contentDisplay="TOP" layoutX="463.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" text="Label" />
-      <Label layoutX="78.0" layoutY="348.0" text="День с минимальной разницей" />
-      <Label fx:id="finDay" alignment="CENTER" layoutX="286.0" layoutY="348.0" prefHeight="17.0" prefWidth="90.0" text="Label" />
+      <Label fx:id="day01" alignment="CENTER" contentDisplay="TOP" layoutX="47.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="day11" alignment="CENTER" contentDisplay="TOP" layoutX="158.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="day21" alignment="CENTER" contentDisplay="TOP" layoutX="254.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="day31" alignment="CENTER" contentDisplay="TOP" layoutX="361.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="day41" alignment="CENTER" contentDisplay="TOP" layoutX="463.0" layoutY="262.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="minRazn" layoutX="185.0" layoutY="236.0" text="Минимальная разница между температурами" visible="false"/>
+      <Label fx:id="temp011" alignment="CENTER" contentDisplay="TOP" layoutX="47.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="temp111" alignment="CENTER" contentDisplay="TOP" layoutX="158.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="temp211" alignment="CENTER" contentDisplay="TOP" layoutX="254.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="temp311" alignment="CENTER" contentDisplay="TOP" layoutX="361.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0"  />
+      <Label fx:id="temp411" alignment="CENTER" contentDisplay="TOP" layoutX="463.0" layoutY="300.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="90.0" />
+      <Label fx:id="raznDa" layoutX="78.0" layoutY="348.0" text="День с минимальной разницей" visible="false"/>
+      <Label fx:id="finDay" alignment="CENTER" layoutX="286.0" layoutY="348.0" prefHeight="17.0" prefWidth="90.0"/>
    </children>
 </Pane>

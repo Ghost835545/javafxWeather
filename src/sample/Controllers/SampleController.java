@@ -5,17 +5,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import sample.Models.WeatherManager;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 public class SampleController {
     private WeatherManager wm = new WeatherManager("");
     @FXML
-    private TextField latitudeText;
+    private TextField latitude;
     @FXML
-    private TextField longitudeText;
+    private TextField longitude;
 
     @FXML
     private Label day0;
@@ -64,14 +59,29 @@ public class SampleController {
     @FXML
     private Label finDay;
 
-    public void buttonCLicked()  {
+    @FXML
+    private Label forecast;
+    @FXML
+    private Label atmsTit;
+    @FXML
+    private Label maxPr;
+    @FXML
+    private Label minRazn;
+    @FXML
+    private Label raznDa;
+
+
+    public void buttonCLicked() {
         cityInput();
     }
-    public void cityInput()  {
-         if (wm.getWeather("59.894444", "30.264168")) outputWeather();
-         outputWeather();
+
+    public void cityInput() {
+        if (wm.getWeather(latitude.getText().toString(), longitude.getText().toString())) outputWeather();
+        outputWeather();
     }
-    public void outputWeather(){
+
+    public void outputWeather() {
+
 
         day0.setText(wm.str.get(0));
         day1.setText(wm.str.get(1));
@@ -99,5 +109,13 @@ public class SampleController {
 
         maxPres.setText(wm.max.toString());
         finDay.setText(wm.convertUTC(wm.minDay));
+
+        forecast.setVisible(true);
+        atmsTit.setVisible(true);
+        maxPr.setVisible(true);
+        minRazn.setVisible(true);
+        raznDa.setVisible(true);
+
+
     }
 }
