@@ -1,31 +1,45 @@
 package sample.Models;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 public class WeatherManager {
-    private String city;
-    private String day;
-    private Integer temperature;
-    private String icon;
-    private String description;
-    private String windSpeed;
-    private String cloudiness;
-    private String pressure;
-    private String humidity;
+
+    private JSONArray json_specific;
+    public ArrayList<String> str;
+    public ArrayList<String> temp0;
+    public ArrayList<Float> razn;
+    public Float max;
+    public long minDay;
 
     public WeatherManager(String city) {
-        this.city = city;
-    }
 
+    }
+    public String convertUTC(long d){
+
+        long unixSeconds = d;
+// convert seconds to milliseconds
+        Date date = new java.util.Date(unixSeconds*1000L);
+// the format of your date
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("d MMMM, yyyy");
+// give a timezone reference for formatting (see comment at the bottom)
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone("Europe/Moscow"));
+        String formattedDate = sdf.format(date);
+        return formattedDate;
+    }
     //Build a String from the read Json file
     private String readAll(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -48,77 +62,87 @@ public class WeatherManager {
             is.close();
         }
     }
-
+    private Float tofloat(String a){
+        try {
+            float number = Float.parseFloat(a);
+            return  number;
+        }
+        catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+       return 0f;
+    }
+    private long toLong(String a){
+        try {
+            long number = Long.parseLong(a);
+            return  number;
+        }
+        catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return 0L;
+    }
     //method to get the weather of the selected city
-    public void getWeather(){
+    public Boolean getWeather(String latitude, String longitude){
+        str = new ArrayList<>();
+        temp0 = new ArrayList<>();
+        razn = new ArrayList<>();;
+
+        boolean success = true;
         int d = 0;
 
         JSONObject json;
-        JSONObject json_specific; //get specific data in jsonobject variable
+         //get specific data in jsonobject variable
+        JSONObject json_temp;
 
         SimpleDateFormat df2 = new SimpleDateFormat("EEEE", Locale.ENGLISH); //Entire word/day as output
         Calendar c = Calendar.getInstance();
 
         //connects and asks the api to sen the json file
         try {
-            json = readJsonFromUrl("https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=33e9b641515014c78d7f2f6114f0cf5d");
+            json = readJsonFromUrl("https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&units=metric"+"&appid=33e9b641515014c78d7f2f6114f0cf5d");
         } catch (IOException e) {
-            return;
+            return false;
         }
 
         //receives the particular data in the read Json File
-        json_specific = json.getJSONObject("main");
-        this.temperature = json_specific.getInt("temp");
-        this.pressure = json_specific.get("pressure").toString();
-        this.humidity = json_specific.get("humidity").toString();
-        json_specific = json.getJSONObject("wind");
-        this.windSpeed = json_specific.get("speed").toString();
-        json_specific = json.getJSONObject("clouds");
-        this.cloudiness = json_specific.get("all").toString();
+        json_specific = json.getJSONArray("daily");
+        max = tofloat(json_specific.getJSONObject(0).get("pressure").toString());
+        float minRazn = tofloat(json_specific.getJSONObject(0).getJSONObject("temp").get("night").toString()) -
+                tofloat(json_specific.getJSONObject(0).getJSONObject("temp").get("morn").toString());
+        minDay = toLong(json_specific.getJSONObject(0).get("dt").toString());
 
-        c.add(Calendar.DATE, d);
-        this.day = df2.format(c.getTime());
+        str.add(convertUTC(toLong(json_specific.getJSONObject(0).get("dt").toString())));
+        temp0.add(json_specific.getJSONObject(0).get("pressure").toString());
+        razn.add(minRazn);
 
-        json_specific = json.getJSONArray("weather").getJSONObject(0);
-        this.description = json_specific.get("description").toString();
-        this.icon = json_specific.get("icon").toString();
+
+        for (int i = 1; i<5; i++){
+            if (tofloat(json_specific.getJSONObject(i).get("pressure").toString())>max) {
+                max = tofloat(json_specific.getJSONObject(i).get("pressure").toString());
+                convertUTC(toLong(json_specific.getJSONObject(i).get("dt").toString()));
+            }
+
+            if (minRazn > computeRazn(i)){
+                minRazn = computeRazn(i);
+                minDay = toLong(json_specific.getJSONObject(i).get("dt").toString());
+            }
+            razn.add(computeRazn(i));
+            str.add(convertUTC(toLong(json_specific.getJSONObject(i).get("dt").toString())));
+            temp0.add(json_specific.getJSONObject(i).get("pressure").toString());
+
+        }
+
+        return true;
+    }
+
+    private float computeRazn(Integer i){
+        float r = tofloat(json_specific.getJSONObject(i).getJSONObject("temp").get("night").toString()) -
+                tofloat(json_specific.getJSONObject(i).getJSONObject("temp").get("morn").toString());
+        if (r < 0) r= -r;
+        return r;
+
     }
 
 
-    //Setters for all the private fields
-    public String getCity() {
-        return city;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public Integer getTemperature() {
-        return temperature;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getWindSpeed() {
-        return windSpeed;
-    }
-
-    public String getCloudiness() {
-        return cloudiness;
-    }
-
-    public String getPressure() {
-        return pressure;
-    }
-
-    public String getHumidity() {
-        return humidity;
-    }
 }
