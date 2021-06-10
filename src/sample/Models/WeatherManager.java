@@ -88,41 +88,43 @@ public class WeatherManager {
         temp0 = new ArrayList<>();
         razn = new ArrayList<>();;
 
-        boolean success = true;
-        int d = 0;
-
         JSONObject json;
-         //get specific data in jsonobject variable
         JSONObject json_temp;
 
         SimpleDateFormat df2 = new SimpleDateFormat("EEEE", Locale.ENGLISH); //Entire word/day as output
         Calendar c = Calendar.getInstance();
 
-        //connects and asks the api to sen the json file
+        //соединение с сервером openweathermap
         try {
             json = readJsonFromUrl("https://api.openweathermap.org/data/2.5/onecall?lat="+latitude+"&lon="+longitude+"&units=metric"+"&appid=33e9b641515014c78d7f2f6114f0cf5d");
         } catch (IOException e) {
             return false;
         }
-
-        //receives the particular data in the read Json File
+        //получение ежедневного прогноза
         json_specific = json.getJSONArray("daily");
+        // задание max давления первому значению json объекта
         max = tofloat(json_specific.getJSONObject(0).get("pressure").toString());
+        // вычисление разности первого дня( температуры ночной и дневрной )
         float minRazn = tofloat(json_specific.getJSONObject(0).getJSONObject("temp").get("night").toString()) -
                 tofloat(json_specific.getJSONObject(0).getJSONObject("temp").get("morn").toString());
+        // задание начального минимального дня по разности температуры (ночь и день)
         minDay = toLong(json_specific.getJSONObject(0).get("dt").toString());
 
+        // добавление в коллекции начальных значени: max давление, день с минимальной разницей температур, значение минимальной разницы по дню
         str.add(convertUTC(toLong(json_specific.getJSONObject(0).get("dt").toString())));
         temp0.add(json_specific.getJSONObject(0).get("pressure").toString());
         razn.add(minRazn);
+        ///////////////////////////
 
 
+        // прогонка 5 прогнозов погоды из JSON OBJECT
         for (int i = 1; i<5; i++){
+            // нахождение max давления
             if (tofloat(json_specific.getJSONObject(i).get("pressure").toString())>max) {
                 max = tofloat(json_specific.getJSONObject(i).get("pressure").toString());
                 convertUTC(toLong(json_specific.getJSONObject(i).get("dt").toString()));
             }
-
+            // нахождение минимальной разницы между ночной и дневной температурами
             if (minRazn > computeRazn(i)){
                 minRazn = computeRazn(i);
                 minDay = toLong(json_specific.getJSONObject(i).get("dt").toString());
@@ -132,10 +134,9 @@ public class WeatherManager {
             temp0.add(json_specific.getJSONObject(i).get("pressure").toString());
 
         }
-
         return true;
     }
-
+    // вычисление разности в отдельной функции
     private float computeRazn(Integer i){
         float r = tofloat(json_specific.getJSONObject(i).getJSONObject("temp").get("night").toString()) -
                 tofloat(json_specific.getJSONObject(i).getJSONObject("temp").get("morn").toString());
